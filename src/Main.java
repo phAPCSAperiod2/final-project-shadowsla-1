@@ -15,6 +15,13 @@ public class Main {
         period.addOrUpdatePeriod(name, start, end);
         period.displayPeriods();
 
+        // Save today's class into DateManager
+        DateManager manager = new DateManager();
+        manager.DateManager(name, start, end);
+
+        // Show today's schedule
+        manager.displayTodaySchedule();
+
         Schedule.main(args); // call Schedule program
 
         input.close();

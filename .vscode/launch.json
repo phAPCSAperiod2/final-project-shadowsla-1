@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Schedule",
+      "request": "launch",
+      "mainClass": "Schedule",
+      "projectName": "final-project-shadowsla-1_6155687f"
+    },
+    {
+      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",

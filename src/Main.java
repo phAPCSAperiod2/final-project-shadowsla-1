@@ -4,6 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Period period = new Period();
+        Schedule.main(args); // call Schedule program
 
         System.out.print("Enter class name: ");
         String name = input.nextLine();
@@ -22,7 +23,6 @@ public class Main {
         // Show today's schedule
         manager.displayTodaySchedule();
 
-        Schedule.main(args); // call Schedule program
 
         input.close();
     }

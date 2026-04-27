@@ -2,27 +2,39 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
         Scanner input = new Scanner(System.in);
         Period period = new Period();
-        Schedule.main(args); // call Schedule program
+        DateManager manager = new DateManager();
 
-        System.out.print("Enter class name: ");
-        String name = input.nextLine();
-        System.out.print("Enter start time (e.g. 08:00): ");
-        String start = input.nextLine();
-        System.out.print("Enter end time (e.g. 09:00): ");
-        String end = input.nextLine();
+        System.out.print("Enter number of classes: ");
+        int numClasses = input.nextInt();
+        input.nextLine();
 
-        period.addOrUpdatePeriod(name, start, end);
+        for (int i = 0; i < numClasses; i++) {
+
+            System.out.println("\nClass " + (i + 1));
+
+            System.out.print("Enter class name: ");
+            String name = input.nextLine();
+
+            System.out.print("Enter start time (e.g. 08:00 AM): ");
+            String start = input.nextLine();
+
+            System.out.print("Enter end time (e.g. 09:00 AM): ");
+            String end = input.nextLine();
+
+            period.addOrUpdatePeriod(name, start, end);
+            manager.addClassToday(name, start, end);
+        }
+
+        System.out.println("\n--- All Periods ---");
         period.displayPeriods();
 
-        // Save today's class into DateManager
-        DateManager manager = new DateManager();
-        manager.DateManager(name, start, end);
-
-        // Show today's schedule
         manager.displayTodaySchedule();
 
+        // Show real-world time
+        TimeUtil.showCurrentTime();
 
         input.close();
     }

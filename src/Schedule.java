@@ -28,6 +28,13 @@ public class Schedule {
             String[] timeParts = timeInput.split(":");
             hours[i] = Integer.parseInt(timeParts[0]);
             minutes[i] = Integer.parseInt(timeParts[1]);
+
+            System.out.print("End time (e.g. 09:00): ");
+            String endTimeInput = input.nextLine();
+
+            String[] endTimeParts = endTimeInput.split(":");
+            hours[i] = Integer.parseInt(timeParts[0]);
+            minutes[i] = Integer.parseInt(timeParts[1]);
         }
 
         //  Output schedule

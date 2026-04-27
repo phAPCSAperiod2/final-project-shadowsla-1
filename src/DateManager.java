@@ -1,98 +1,73 @@
- public class DateManager {
+public class DateManager {
 
+    String[] dates = new String[30];
+    String[][] classNames = new String[30][10];
+    String[][] startTimes = new String[30][10];
+    String[][] endTimes = new String[30][10];
 
-     // Store up to 30 different dates
-     String[] dates = new String[30];
+    int[] counts = new int[30];
+    int totalDates = 0;
 
-     // Each date can have up to 10 class periods
-     String[][] classNames = new String[30][10];
-     String[][] startTimes = new String[30][10];
-     String[][] endTimes = new String[30][10];
+    public String getTodayDate() {
+        long millis = System.currentTimeMillis();
+        long days = millis / (1000 * 60 * 60 * 24);
+        return "DAY_" + days;
+    }
 
-     int[] counts = new int[30]; // number of classes per day
-     int totalDates = 0;
+    // FIX: renamed method (was same as class name)
+    public void addClassToday(String name, String start, String end) {
 
-     // Method to get today's date automatically
-     public String getTodayDate() {
-         long millis = System.currentTimeMillis();
-         long days = millis / (1000 * 60 * 60 * 24);
-         return "DAY_" + days; // simple unique date key
-     }
+        String today = getTodayDate();
+        int index = -1;
 
-     // Method to add/update schedule for today
-     public void DateManager(String name, String start, String end) {
+        for (int i = 0; i < totalDates; i++) {
+            if (dates[i].equals(today)) {
+                index = i;
+                break;
+            }
+        }
 
-         String today = getTodayDate();
-         int index = -1;
+        if (index == -1) {
+            index = totalDates;
+            dates[index] = today;
+            counts[index] = 0;
+            totalDates++;
+        }
 
-         // Check if today's schedule already exists
-         for (int i = 0; i < totalDates; i++) {
-             if (dates[i].equals(today)) {
-                 index = i;
-                 break;
-             }
-         }
+        for (int i = 0; i < counts[index]; i++) {
+            if (classNames[index][i].equals(name)) {
+                startTimes[index][i] = start;
+                endTimes[index][i] = end;
+                return;
+            }
+        }
 
-         // If not found, create new date entry
-         if (index == -1) {
-             index = totalDates;
-             dates[index] = today;
-             counts[index] = 0;
-             totalDates++;
-         }
+        if (counts[index] < 10) {
+            classNames[index][counts[index]] = name;
+            startTimes[index][counts[index]] = start;
+            endTimes[index][counts[index]] = end;
+            counts[index]++;
+        }
+    }
 
-         // Error check: time validity
-         if (start.compareTo(end) >= 0) {
-             System.out.println("Error: Start time must be before end time.");
-             return;
-         }
+    public void displayTodaySchedule() {
+        String today = getTodayDate();
 
-         // Check if class already exists → update
-         for (int i = 0; i < counts[index]; i++) {
-             if (classNames[index][i].equals(name)) {
-                 startTimes[index][i] = start;
-                 endTimes[index][i] = end;
-                 System.out.println("Updated for today: " + name);
-                 return;
-             }
-         }
+        for (int i = 0; i < totalDates; i++) {
+            if (dates[i].equals(today)) {
 
-         // Add new class
-         if (counts[index] < 10) {
-             classNames[index][counts[index]] = name;
-             startTimes[index][counts[index]] = start;
-             endTimes[index][counts[index]] = end;
-             counts[index]++;
-             System.out.println("Added for today: " + name);
-         } else {
-             System.out.println("Error: Daily schedule full.");
-         }
-     }
+                System.out.println("\n--- Today's Schedule ---");
+                for (int j = 0; j < counts[i]; j++) {
+                    System.out.println(
+                        classNames[i][j] + ": " +
+                        startTimes[i][j] + " - " +
+                        endTimes[i][j]
+                    );
+                }
+                return;
+            }
+        }
 
-     // Method to display today's schedule
-     public void displayTodaySchedule() {
-         String today = getTodayDate();
-
-         for (int i = 0; i < totalDates; i++) {
-             if (dates[i].equals(today)) {
-
-                 if (counts[i] == 0) {
-                     System.out.println("Error: No schedule found for today.");
-                     return;
-                 }
-
-                 System.out.println("\n--- Today's Schedule ---");
-                 for (int j = 0; j < counts[i]; j++) {
-                     System.out.println(
-                         classNames[i][j] + ": " +
-                         startTimes[i][j] + " - " +
-                         endTimes[i][j]
-                     );
-                 }
-                 return;
-             }
-         }
-
-         System.out.println("Error: No schedule set for today.");
-     }
- }
+        System.out.println("No schedule for today.");
+    }
+}

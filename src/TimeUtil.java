@@ -5,8 +5,9 @@ public class TimeUtil {
 
     public static void showCurrentTime() {
         LocalTime now = LocalTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("hh:mm a");
+DateTimeFormatter format = DateTimeFormatter.ofPattern("h:mm a");
 
         System.out.println("\nCurrent Time: " + now.format(format));
     }
+    
 }

@@ -36,6 +36,23 @@ public class Main {
         // Show real-world time
         TimeUtil.showCurrentTime();
 
-        input.close();
+    input.close();
+
+    Reminder reminder = new Reminder();
+
+while (true) {
+    reminder.checkSchedule(
+        period.names,
+        period.startTimes,
+        period.endTimes,
+        period.count
+    );
+
+    try {
+        Thread.sleep(60000); // wait 1 minute
+    } catch (InterruptedException e) {
+        e.printStackTrace();
     }
+}
+}
 }

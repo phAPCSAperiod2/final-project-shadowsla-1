@@ -1,60 +1,31 @@
 public class DateManager {
 
-    private String[] dates = new String[30];
-    private String[][] names = new String[30][10];
-    private String[][] starts = new String[30][10];
-    private String[][] ends = new String[30][10];
+    String[] names = new String[10];
+    String[] starts = new String[10];
+    String[] ends = new String[10];
+    int count = 0;
 
-    private int[] counts = new int[30];
-    private int totalDates = 0;
+    public void addClass(String name, String start, String end) {
 
-    public void addClassToday(String name, String start, String end) {
-
-        String today = getToday();
-        int index = findOrCreate(today);
-
-        if (counts[index] < 10) {
-            names[index][counts[index]] = name;
-            starts[index][counts[index]] = start;
-            ends[index][counts[index]] = end;
-            counts[index]++;
+        if (count < 10) {
+            names[count] = name;
+            starts[count] = start;
+            ends[count] = end;
+            count++;
         }
     }
 
-    public void displayTodaySchedule() {
+    public void printToday() {
 
-        String today = getToday();
+        System.out.println("\n--- Today's Schedule ---");
 
-        for (int i = 0; i < totalDates; i++) {
-            if (dates[i].equals(today)) {
-
-                System.out.println("\n--- Today's Schedule ---");
-                for (int j = 0; j < counts[i]; j++) {
-                    System.out.println(names[i][j] + ": " + starts[i][j] + " - " + ends[i][j]);
-                }
-                return;
-            }
+        if (count == 0) {
+            System.out.println("No classes");
+            return;
         }
 
-        System.out.println("No schedule today.");
-    }
-
-    private String getToday() {
-        long days = System.currentTimeMillis() / (1000 * 60 * 60 * 24);
-        return "DAY_" + days;
-    }
-
-    private int findOrCreate(String date) {
-
-        for (int i = 0; i < totalDates; i++) {
-            if (dates[i].equals(date)) {
-                return i;
-            }
+        for (int i = 0; i < count; i++) {
+            System.out.println(names[i] + ": " + starts[i] + " - " + ends[i]);
         }
-
-        dates[totalDates] = date;
-        counts[totalDates] = 0;
-        totalDates++;
-        return totalDates - 1;
     }
 }

@@ -1,29 +1,35 @@
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 public class Schedule {
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+    public void showGaps(Period p) {
 
-    // Calculate time between classes
-    public void showGaps(String[] names, String[] starts, String[] ends, int count) {
+        System.out.println("\n--- Gaps Between Classes ---");
 
-        System.out.println("\n--- Time Between Classes ---");
+        for (int i = 0; i < p.count - 1; i++) {
 
-        for (int i = 0; i < count - 1; i++) {
+            int end = toMinutes(p.ends[i]);
+            int next = toMinutes(p.starts[i + 1]);
 
-            LocalTime endCurrent = LocalTime.parse(ends[i], formatter);
-            LocalTime startNext = LocalTime.parse(starts[i + 1], formatter);
+            int gap = next - end;
 
-            long gap = java.time.Duration.between(endCurrent, startNext).toMinutes();
-
-            System.out.println("Between " + names[i] + " and " + names[i + 1] + ": " + gap + " minutes");
+            System.out.println(p.names[i] + " → " + p.names[i + 1] + ": " + gap + " min");
 
             if (gap < 5) {
-                System.out.println("⚠ VERY SHORT PASSING PERIOD!");
-            } else if (gap < 10) {
-                System.out.println("⚠ Might be tight.");
+                System.out.println("Short passing period!");
             }
         }
+    }
+
+    private int toMinutes(String time) {
+
+        String[] parts = time.split(" ");
+        String[] hm = parts[0].split(":");
+
+        int hour = Integer.parseInt(hm[0]);
+        int min = Integer.parseInt(hm[1]);
+
+        if (parts[1].equals("PM") && hour != 12) hour += 12;
+        if (parts[1].equals("AM") && hour == 12) hour = 0;
+
+        return hour * 60 + min;
     }
 }

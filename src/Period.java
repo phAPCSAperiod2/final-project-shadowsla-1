@@ -1,84 +1,65 @@
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 public class Period {
 
-    private String[] classNames = new String[10];
-    private String[] startTimes = new String[10];
-    private String[] endTimes = new String[10];
-    private int count = 0;
-
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+    String[] names = new String[10];
+    String[] starts = new String[10];
+    String[] ends = new String[10];
+    int count = 0;
 
     public void addClass(String name, String start, String end) {
 
-        if (!isValidTime(start) || !isValidTime(end) || !isStartBeforeEnd(start, end)) {
-            System.out.println("Invalid time.");
-            return;
-        }
-
-        for (int i = 0; i < count; i++) {
-            if (classNames[i].equals(name)) {
-                startTimes[i] = start;
-                endTimes[i] = end;
-                sortClasses();
-                return;
-            }
-        }
-
-        if (count < classNames.length) {
-            classNames[count] = name;
-            startTimes[count] = start;
-            endTimes[count] = end;
+        if (count < 10) {
+            names[count] = name;
+            starts[count] = start;
+            ends[count] = end;
             count++;
-            sortClasses();
         }
+
+        sort();
     }
 
     public void printSchedule() {
         System.out.println("\n--- Schedule ---");
         for (int i = 0; i < count; i++) {
-            System.out.println(classNames[i] + ": " + startTimes[i] + " - " + endTimes[i]);
+            System.out.println(names[i] + ": " + starts[i] + " - " + ends[i]);
         }
     }
 
-    private boolean isValidTime(String time) {
-        return time.matches("(1[0-2]|0?[1-9]):[0-5][0-9] (AM|PM)");
+    private int toMinutes(String time) {
+
+        String[] parts = time.split(" ");
+        String[] hm = parts[0].split(":");
+
+        int hour = Integer.parseInt(hm[0]);
+        int min = Integer.parseInt(hm[1]);
+
+        if (parts[1].equals("PM") && hour != 12) hour += 12;
+        if (parts[1].equals("AM") && hour == 12) hour = 0;
+
+        return hour * 60 + min;
     }
 
-    private boolean isStartBeforeEnd(String start, String end) {
-        LocalTime s = LocalTime.parse(start, formatter);
-        LocalTime e = LocalTime.parse(end, formatter);
-        return s.isBefore(e);
-    }
+    private void sort() {
 
-    private void sortClasses() {
         for (int i = 0; i < count - 1; i++) {
             for (int j = i + 1; j < count; j++) {
 
-                LocalTime t1 = LocalTime.parse(startTimes[i], formatter);
-                LocalTime t2 = LocalTime.parse(startTimes[j], formatter);
+                if (toMinutes(starts[i]) > toMinutes(starts[j])) {
 
-                if (t1.isAfter(t2)) {
+                    String temp;
 
-                    String tempName = classNames[i];
-                    classNames[i] = classNames[j];
-                    classNames[j] = tempName;
+                    temp = names[i];
+                    names[i] = names[j];
+                    names[j] = temp;
 
-                    String tempStart = startTimes[i];
-                    startTimes[i] = startTimes[j];
-                    startTimes[j] = tempStart;
+                    temp = starts[i];
+                    starts[i] = starts[j];
+                    starts[j] = temp;
 
-                    String tempEnd = endTimes[i];
-                    endTimes[i] = endTimes[j];
-                    endTimes[j] = tempEnd;
+                    temp = ends[i];
+                    ends[i] = ends[j];
+                    ends[j] = temp;
                 }
             }
         }
     }
-
-    public String[] getNames() { return classNames; }
-    public String[] getStartTimes() { return startTimes; }
-    public String[] getEndTimes() { return endTimes; }
-    public int getCount() { return count; }
 }

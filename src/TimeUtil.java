@@ -1,13 +1,25 @@
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 public class TimeUtil {
 
-    public static void showCurrentTime() {
-        LocalTime now = LocalTime.now(ZoneId.of("America/Los_Angeles"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+    public static void showTime() {
 
-        System.out.println("\nCurrent Time: " + now.format(formatter));
+        LocalTime now = LocalTime.now();
+
+        int hour = now.getHour();
+        int minute = now.getMinute();
+
+        String period = "AM";
+
+        if (hour >= 12) {
+            period = "PM";
+            if (hour > 12) hour -= 12;
+        }
+
+        if (hour == 0) hour = 12;
+
+        String minStr = minute < 10 ? "0" + minute : "" + minute;
+
+        System.out.println("\nCurrent Time: " + hour + ":" + minStr + " " + period);
     }
 }

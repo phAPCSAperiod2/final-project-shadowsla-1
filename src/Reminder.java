@@ -1,40 +1,49 @@
-import java.time.Duration;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 public class Reminder {
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
-    private ZoneId zone = ZoneId.of("America/Los_Angeles");
+    public void check(Period p) {
 
-    public void checkSchedule(String[] names, String[] starts, String[] ends, int count) {
+        LocalTime now = LocalTime.now();
+        int current = now.getHour() * 60 + now.getMinute();
 
-        LocalTime now = LocalTime.now(zone);
-        System.out.println("\n[Time: " + now.format(formatter) + "]");
+        for (int i = 0; i < p.count; i++) {
 
-        for (int i = 0; i < count; i++) {
+            int start = toMinutes(p.starts[i]);
+            int end = toMinutes(p.ends[i]);
 
-            LocalTime start = LocalTime.parse(starts[i], formatter);
-            LocalTime end = LocalTime.parse(ends[i], formatter);
-
-            if (!now.isBefore(start) && now.isBefore(end)) {
-                long minutesLeft = Duration.between(now, end).toMinutes();
-                System.out.println("Current: " + names[i] + " (" + minutesLeft + " min left)");
+            if (current >= start && current < end) {
+                System.out.println("Current class: " + p.names[i]);
                 return;
             }
 
-            if (now.isBefore(start)) {
-                long minutes = Duration.between(now, start).toMinutes();
-                System.out.println("Next: " + names[i] + " (" + minutes + " min)");
+            if (current < start) {
+                int diff = start - current;
 
-                if (minutes <= 5) {
-                    System.out.println("⚠ Passing period!");
+                System.out.println("Next class: " + p.names[i] + " in " + diff + " min");
+
+                if (diff <= 5) {
+                    System.out.println("Hurry! Passing period!");
                 }
+
                 return;
             }
         }
 
-        System.out.println("Done for the day.");
+        System.out.println("No more classes today");
+    }
+
+    private int toMinutes(String time) {
+
+        String[] parts = time.split(" ");
+        String[] hm = parts[0].split(":");
+
+        int hour = Integer.parseInt(hm[0]);
+        int min = Integer.parseInt(hm[1]);
+
+        if (parts[1].equals("PM") && hour != 12) hour += 12;
+        if (parts[1].equals("AM") && hour == 12) hour = 0;
+
+        return hour * 60 + min;
     }
 }

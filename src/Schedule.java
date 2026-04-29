@@ -1,66 +1,29 @@
-import java.util.Scanner;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Schedule {
 
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
 
-        String[] classNames = new String[10];
-        int[] hours = new int[10];
-        int[] minutes = new int[10];
+    // Calculate time between classes
+    public void showGaps(String[] names, String[] starts, String[] ends, int count) {
 
-        //  Ask FIRST how many classes
-        System.out.print("Enter number of classes (max 10): ");
-        int numClasses = input.nextInt();
-        input.nextLine(); // clear buffer
-
-        //  Loop based on that number
-        for (int i = 0; i < numClasses; i++) {
-
-            System.out.print("Enter class name: ");
-            classNames[i] = input.nextLine();
-
-            //  Only ask for ONE time input like 08:00
-            System.out.print("Enter start time (e.g. 08:00): ");
-            String timeInput = input.nextLine();
-
-            //  Split into hour + minute automatically
-            String[] timeParts = timeInput.split(":");
-            hours[i] = Integer.parseInt(timeParts[0]);
-            minutes[i] = Integer.parseInt(timeParts[1]);
-
-            System.out.print("End time (e.g. 09:00): ");
-            String endTimeInput = input.nextLine();
-
-            String[] endTimeParts = endTimeInput.split(":");
-            hours[i] = Integer.parseInt(timeParts[0]);
-            minutes[i] = Integer.parseInt(timeParts[1]);
-        }
-
-        //  Output schedule
-        System.out.println("\n--- Your Schedule ---");
-        for (int i = 0; i < numClasses; i++) {
-            System.out.println(classNames[i] + " at "
-                + hours[i] + ":" + (minutes[i] < 10 ? "0" : "") + minutes[i]);
-        }
-
-        //  Time between classes
         System.out.println("\n--- Time Between Classes ---");
-        for (int i = 0; i < numClasses - 1; i++) {
 
-            int currentTime = hours[i] * 60 + minutes[i];
-            int nextTime = hours[i + 1] * 60 + minutes[i + 1];
+        for (int i = 0; i < count - 1; i++) {
 
-            int gap = nextTime - currentTime;
+            LocalTime endCurrent = LocalTime.parse(ends[i], formatter);
+            LocalTime startNext = LocalTime.parse(starts[i + 1], formatter);
 
-            System.out.println("Between " + classNames[i] + " and "
-                + classNames[i + 1] + ": " + gap + " minutes");
+            long gap = java.time.Duration.between(endCurrent, startNext).toMinutes();
 
-            if (gap < 10) {
-                System.out.println("WARNING: You might be late!");
+            System.out.println("Between " + names[i] + " and " + names[i + 1] + ": " + gap + " minutes");
+
+            if (gap < 5) {
+                System.out.println("⚠ VERY SHORT PASSING PERIOD!");
+            } else if (gap < 10) {
+                System.out.println("⚠ Might be tight.");
             }
         }
-
-        input.close();
     }
 }

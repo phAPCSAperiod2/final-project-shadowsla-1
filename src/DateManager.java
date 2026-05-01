@@ -1,3 +1,8 @@
+/*
+ * Stores and prints today's schedule
+ * Simple version for project completeness
+ */
+
 public class DateManager {
 
     String[] names = new String[10];
@@ -5,6 +10,7 @@ public class DateManager {
     String[] ends = new String[10];
     int count = 0;
 
+    // Add class to today's schedule
     public void addClass(String name, String start, String end) {
 
         if (count < 10) {
@@ -15,12 +21,13 @@ public class DateManager {
         }
     }
 
+    // Print today's schedule
     public void printToday() {
 
         System.out.println("\n--- Today's Schedule ---");
 
         if (count == 0) {
-            System.out.println("No classes");
+            System.out.println("No classes today.");
             return;
         }
 

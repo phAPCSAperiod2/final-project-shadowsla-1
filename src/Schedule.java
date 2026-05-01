@@ -2,7 +2,12 @@ public class Schedule {
 
     public void showGaps(Period p) {
 
-        System.out.println("\n--- Gaps Between Classes ---");
+        if (p.count < 2) {
+            System.out.println("\nNot enough classes to show gaps.");
+            return;
+        }
+
+        System.out.println("\n--- Time Between Classes ---");
 
         for (int i = 0; i < p.count - 1; i++) {
 
@@ -11,7 +16,7 @@ public class Schedule {
 
             int gap = next - end;
 
-            System.out.println(p.names[i] + " → " + p.names[i + 1] + ": " + gap + " min");
+            System.out.println(p.names[i] + " to " + p.names[i + 1] + ": " + gap + " minutes");
 
             if (gap < 5) {
                 System.out.println("Short passing period!");
@@ -21,15 +26,20 @@ public class Schedule {
 
     private int toMinutes(String time) {
 
-        String[] parts = time.split(" ");
-        String[] hm = parts[0].split(":");
+        try {
+            String[] parts = time.split(" ");
+            String[] hm = parts[0].split(":");
 
-        int hour = Integer.parseInt(hm[0]);
-        int min = Integer.parseInt(hm[1]);
+            int hour = Integer.parseInt(hm[0]);
+            int min = Integer.parseInt(hm[1]);
 
-        if (parts[1].equals("PM") && hour != 12) hour += 12;
-        if (parts[1].equals("AM") && hour == 12) hour = 0;
+            if (parts[1].equals("PM") && hour != 12) hour += 12;
+            if (parts[1].equals("AM") && hour == 12) hour = 0;
 
-        return hour * 60 + min;
+            return hour * 60 + min;
+
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

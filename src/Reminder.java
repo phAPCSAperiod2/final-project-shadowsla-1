@@ -20,12 +20,11 @@ public class Reminder {
             if (current < start) {
                 int diff = start - current;
 
-                System.out.println("Next class: " + p.names[i] + " in " + diff + " min");
+                System.out.println("Next class: " + p.names[i] + " in " + diff + " minutes");
 
                 if (diff <= 5) {
                     System.out.println("Hurry! Passing period!");
                 }
-
                 return;
             }
         }
@@ -35,15 +34,20 @@ public class Reminder {
 
     private int toMinutes(String time) {
 
-        String[] parts = time.split(" ");
-        String[] hm = parts[0].split(":");
+        try {
+            String[] parts = time.split(" ");
+            String[] hm = parts[0].split(":");
 
-        int hour = Integer.parseInt(hm[0]);
-        int min = Integer.parseInt(hm[1]);
+            int hour = Integer.parseInt(hm[0]);
+            int min = Integer.parseInt(hm[1]);
 
-        if (parts[1].equals("PM") && hour != 12) hour += 12;
-        if (parts[1].equals("AM") && hour == 12) hour = 0;
+            if (parts[1].equals("PM") && hour != 12) hour += 12;
+            if (parts[1].equals("AM") && hour == 12) hour = 0;
 
-        return hour * 60 + min;
+            return hour * 60 + min;
+
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

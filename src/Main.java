@@ -6,95 +6,102 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
 
-        Period schedule = new Period();
+        Period period = new Period();
         Schedule helper = new Schedule();
         Reminder reminder = new Reminder();
         DateManager date = new DateManager();
+
+        period.loadFromFile();
 
         boolean running = true;
 
         while (running) {
 
-            System.out.println("\n=== Schedule Menu ===");
+            System.out.println("\n=== MENU ===");
             System.out.println("1. Add Class");
             System.out.println("2. View Schedule");
             System.out.println("3. Edit Class");
             System.out.println("4. Delete Class");
             System.out.println("5. Show Gaps");
-            System.out.println("6. Show Today's Schedule");
-            System.out.println("7. Show Current Time");
-            System.out.println("8. Start Live Tracker");
+            System.out.println("6. Show Time");
+            System.out.println("7. Start Reminder (10 loops)");
+            System.out.println("8. Open GUI");
             System.out.println("9. Exit");
 
-            System.out.print("Choose option: ");
+            System.out.print("Choice: ");
             int choice = input.nextInt();
             input.nextLine();
 
             if (choice == 1) {
 
-                System.out.print("Class name: ");
+                System.out.print("Name: ");
                 String name = input.nextLine();
 
-                System.out.print("Start (ex: 8:00 AM): ");
-                String start = input.nextLine();
+                String start = getValidTime(input, "Start (8:00 AM): ");
+                String end = getValidTime(input, "End (9:00 AM): ");
 
-                System.out.print("End (ex: 9:00 AM): ");
-                String end = input.nextLine();
-
-                schedule.addClass(name, start, end);
-                date.addClass(name, start, end); // also store in today's schedule
+                period.addOrUpdatePeriod(name, start, end);
+                period.saveToFile();
             }
 
             else if (choice == 2) {
-                schedule.printSchedule();
+                period.displayPeriods();
             }
 
             else if (choice == 3) {
-                schedule.editClass(input);
+                period.editClass(input);
+                period.saveToFile();
             }
 
             else if (choice == 4) {
-                schedule.deleteClass(input);
+                period.deleteClass(input);
+                period.saveToFile();
             }
 
             else if (choice == 5) {
-                helper.showGaps(schedule);
+                helper.showGaps(period);
             }
 
             else if (choice == 6) {
-                date.printToday();
+                System.out.println(TimeUtil.getTimeString());
             }
 
             else if (choice == 7) {
-                TimeUtil.showTime();
+
+                for (int i = 0; i < 10; i++) {
+                    reminder.checkSchedule(period);
+                    try {
+                        Thread.sleep(60000);
+                    } catch (Exception e) {}
+                }
             }
 
             else if (choice == 8) {
-
-                System.out.println("\n--- Live Tracker (CTRL+C to stop) ---");
-
-                while (true) {
-
-                    reminder.check(schedule);
-
-                    try {
-                        Thread.sleep(60000); // update every minute
-                    } catch (Exception e) {
-                        System.out.println("Timer error");
-                    }
-                }
+                new ScheduleGUI(period);
             }
 
             else if (choice == 9) {
                 running = false;
-                System.out.println("Goodbye!");
-            }
-
-            else {
-                System.out.println("Invalid option.");
             }
         }
 
         input.close();
+    }
+
+    public static String getValidTime(Scanner input, String msg) {
+
+        while (true) {
+
+            System.out.print(msg);
+            String time = input.nextLine().trim();
+
+            time = time.replace("am", "AM").replace("pm", "PM");
+
+            if (time.matches("\\d{1,2}:\\d{2} (AM|PM)")) {
+                return time;
+            }
+
+            System.out.println("Invalid format.");
+        }
     }
 }

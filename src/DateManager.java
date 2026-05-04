@@ -1,38 +1,55 @@
-/*
- * Stores and prints today's schedule
- * Simple version for project completeness
- */
+import java.time.LocalTime;
+import java.time.ZoneId;
 
 public class DateManager {
 
-    String[] names = new String[10];
-    String[] starts = new String[10];
-    String[] ends = new String[10];
-    int count = 0;
+    public static int getCurrentMinutes() {
 
-    // Add class to today's schedule
-    public void addClass(String name, String start, String end) {
+        LocalTime now = LocalTime.now(ZoneId.of("America/Los_Angeles"));
+        return now.getHour() * 60 + now.getMinute();
+    }
 
-        if (count < 10) {
-            names[count] = name;
-            starts[count] = start;
-            ends[count] = end;
-            count++;
+    public static String getTimeString() {
+
+        LocalTime now = LocalTime.now(ZoneId.of("America/Los_Angeles"));
+
+        int h = now.getHour();
+        int m = now.getMinute();
+
+        String ap = "AM";
+
+        if (h >= 12) {
+            ap = "PM";
+            if (h > 12) h -= 12;
+        }
+
+        if (h == 0) h = 12;
+
+        String min = (m < 10) ? "0" + m : "" + m;
+
+        return "Time: " + h + ":" + min + " " + ap;
+    }
+
+    public static int toMinutes(String t) {
+
+        try {
+            String[] p = t.split(" ");
+            String[] hm = p[0].split(":");
+
+            int h = Integer.parseInt(hm[0]);
+            int m = Integer.parseInt(hm[1]);
+
+            if (p[1].equals("PM") && h != 12) h += 12;
+            if (p[1].equals("AM") && h == 12) h = 0;
+
+            return h * 60 + m;
+
+        } catch (Exception e) {
+            return 0;
         }
     }
 
-    // Print today's schedule
-    public void printToday() {
-
-        System.out.println("\n--- Today's Schedule ---");
-
-        if (count == 0) {
-            System.out.println("No classes today.");
-            return;
-        }
-
-        for (int i = 0; i < count; i++) {
-            System.out.println(names[i] + ": " + starts[i] + " - " + ends[i]);
-        }
+    public static int minutesUntil(String t) {
+        return toMinutes(t) - getCurrentMinutes();
     }
 }

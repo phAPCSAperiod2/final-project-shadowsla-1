@@ -1,39 +1,46 @@
-/*
- * Shows current time in simple AM/PM format
- */
-
-import java.time.LocalTime;
-
 public class TimeUtil {
 
-    public static void showTime() {
+    public void checkSchedule(Period p) {
 
-        LocalTime now = LocalTime.now();
+        int now = TimeUtil.getCurrentMinutes();
 
-        int hour = now.getHour();
-        int minute = now.getMinute();
+        for (int i = 0; i < p.count; i++) {
 
-        String period = "AM";
+            int start = TimeUtil.toMinutes(p.startTimes[i]);
+            int end = TimeUtil.toMinutes(p.endTimes[i]);
 
-        if (hour >= 12) {
-            period = "PM";
-            if (hour > 12) {
-                hour = hour - 12;
+            if (now >= start && now < end) {
+                System.out.println("Current: " + p.names[i]);
+                return;
+            }
+
+            if (now < start) {
+                int diff = start - now;
+                System.out.println("Next: " + p.names[i] + " in " + diff + " min");
+                return;
             }
         }
 
-        if (hour == 0) {
-            hour = 12;
-        }
+        System.out.println("No more classes.");
+    }
 
-        String minStr;
+    static int toMinutes(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'toMinutes'");
+    }
 
-        if (minute < 10) {
-            minStr = "0" + minute;
-        } else {
-            minStr = "" + minute;
-        }
+    static int getCurrentMinutes() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCurrentMinutes'");
+    }
 
-        System.out.println("\nCurrent Time: " + hour + ":" + minStr + " " + period);
+    public static String getTimeString() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTimeString'");
+    }
+
+    public static String minutesUntil(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'minutesUntil'");
     }
 }

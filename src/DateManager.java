@@ -1,55 +1,17 @@
-import java.time.LocalTime;
-import java.time.ZoneId;
-
 public class DateManager {
 
-    public static int getCurrentMinutes() {
+    public void showToday(Period p) {
 
-        LocalTime now = LocalTime.now(ZoneId.of("America/Los_Angeles"));
-        return now.getHour() * 60 + now.getMinute();
-    }
+        System.out.println("\n--- Today ---");
 
-    public static String getTimeString() {
-
-        LocalTime now = LocalTime.now(ZoneId.of("America/Los_Angeles"));
-
-        int h = now.getHour();
-        int m = now.getMinute();
-
-        String ap = "AM";
-
-        if (h >= 12) {
-            ap = "PM";
-            if (h > 12) h -= 12;
+        if (p.count == 0) {
+            System.out.println("No classes.");
+            return;
         }
 
-        if (h == 0) h = 12;
-
-        String min = (m < 10) ? "0" + m : "" + m;
-
-        return "Time: " + h + ":" + min + " " + ap;
-    }
-
-    public static int toMinutes(String t) {
-
-        try {
-            String[] p = t.split(" ");
-            String[] hm = p[0].split(":");
-
-            int h = Integer.parseInt(hm[0]);
-            int m = Integer.parseInt(hm[1]);
-
-            if (p[1].equals("PM") && h != 12) h += 12;
-            if (p[1].equals("AM") && h == 12) h = 0;
-
-            return h * 60 + m;
-
-        } catch (Exception e) {
-            return 0;
+        for (int i = 0; i < p.count; i++) {
+            System.out.println(p.names[i] + " | " +
+                    p.startTimes[i] + " - " + p.endTimes[i]);
         }
-    }
-
-    public static int minutesUntil(String t) {
-        return toMinutes(t) - getCurrentMinutes();
     }
 }

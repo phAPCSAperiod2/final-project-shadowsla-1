@@ -7,6 +7,8 @@ public class Schedule {
             return;
         }
 
+        System.out.println("\n--- Passing Periods ---");
+
         for (int i = 0; i < p.count - 1; i++) {
 
             int end = TimeUtil.toMinutes(p.endTimes[i]);
@@ -15,7 +17,11 @@ public class Schedule {
             int gap = next - end;
 
             System.out.println(p.names[i] + " → " +
-                p.names[i + 1] + ": " + gap + " min");
+                    p.names[i + 1] + ": " + gap + " min");
+
+            if (gap < 10) {
+                System.out.println("⚠ Hurry!");
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class Period {
 
@@ -11,10 +12,17 @@ public class Period {
 
     public void addOrUpdatePeriod(String name, String start, String end) {
 
+        if (!isStartBeforeEnd(start, end)) {
+            System.out.println("Start must be before end.");
+            return;
+        }
+
         for (int i = 0; i < count; i++) {
-            if (names[i].equals(name)) {
+            if (names[i].equalsIgnoreCase(name)) {
+                names[i] = name;
                 startTimes[i] = start;
                 endTimes[i] = end;
+                sort();
                 return;
             }
         }
@@ -31,13 +39,20 @@ public class Period {
 
     public void displayPeriods() {
 
+        System.out.println("\n--- Schedule ---");
+
+        if (count == 0) {
+            System.out.println("No classes.");
+            return;
+        }
+
         for (int i = 0; i < count; i++) {
-            System.out.println((i + 1) + ". " + names[i] + ": " +
-                startTimes[i] + " - " + endTimes[i]);
+            System.out.println((i + 1) + ". " + names[i] + " | " +
+                    startTimes[i] + " - " + endTimes[i]);
         }
     }
 
-    public void editClass(java.util.Scanner input) {
+    public void editClass(Scanner input) {
 
         displayPeriods();
 
@@ -59,7 +74,7 @@ public class Period {
         sort();
     }
 
-    public void deleteClass(java.util.Scanner input) {
+    public void deleteClass(Scanner input) {
 
         displayPeriods();
 
@@ -84,7 +99,7 @@ public class Period {
             for (int j = i + 1; j < count; j++) {
 
                 if (TimeUtil.toMinutes(startTimes[i]) >
-                    TimeUtil.toMinutes(startTimes[j])) {
+                        TimeUtil.toMinutes(startTimes[j])) {
 
                     String t;
 
@@ -96,36 +111,29 @@ public class Period {
         }
     }
 
-    public void saveToFile() {
+    private boolean isStartBeforeEnd(String s, String e) {
+        return TimeUtil.toMinutes(s) < TimeUtil.toMinutes(e);
+    }
 
+    public void saveToFile() {
         try {
             PrintWriter w = new PrintWriter("schedule.txt");
-
             for (int i = 0; i < count; i++) {
                 w.println(names[i] + "," + startTimes[i] + "," + endTimes[i]);
             }
-
             w.close();
-        } catch (Exception e) {}
+        } catch (Exception ex) {}
     }
 
     public void loadFromFile() {
-
         try {
             BufferedReader r = new BufferedReader(new FileReader("schedule.txt"));
             String line;
-
             while ((line = r.readLine()) != null) {
                 String[] p = line.split(",");
                 addOrUpdatePeriod(p[0], p[1], p[2]);
             }
-
             r.close();
-        } catch (Exception e) {}
+        } catch (Exception ex) {}
     }
-
-    public int getCount() { return count; }
-    public String getName(int i) { return names[i]; }
-    public String getStart(int i) { return startTimes[i]; }
-    public String getEnd(int i) { return endTimes[i]; }
 }

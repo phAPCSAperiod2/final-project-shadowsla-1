@@ -17,15 +17,15 @@ public class Main {
 
         while (running) {
 
-            System.out.println("\n=== MENU ===");
+            System.out.println("\n=== SCHOOL SCHEDULE APP ===");
             System.out.println("1. Add Class");
             System.out.println("2. View Schedule");
             System.out.println("3. Edit Class");
             System.out.println("4. Delete Class");
             System.out.println("5. Show Gaps");
-            System.out.println("6. Show Time");
-            System.out.println("7. Start Reminder (10 loops)");
-            System.out.println("8. Open GUI");
+            System.out.println("6. Show Current Time");
+            System.out.println("7. Start Live Tracker");
+            System.out.println("8. Show Today");
             System.out.println("9. Exit");
 
             System.out.print("Choice: ");
@@ -34,7 +34,7 @@ public class Main {
 
             if (choice == 1) {
 
-                System.out.print("Name: ");
+                System.out.print("Class name: ");
                 String name = input.nextLine();
 
                 String start = getValidTime(input, "Start (8:00 AM): ");
@@ -67,17 +67,11 @@ public class Main {
             }
 
             else if (choice == 7) {
-
-                for (int i = 0; i < 10; i++) {
-                    reminder.checkSchedule(period);
-                    try {
-                        Thread.sleep(60000);
-                    } catch (Exception e) {}
-                }
+                reminder.startLiveTracker(period);
             }
 
             else if (choice == 8) {
-                new ScheduleGUI(period);
+                date.showToday(period);
             }
 
             else if (choice == 9) {
@@ -93,15 +87,17 @@ public class Main {
         while (true) {
 
             System.out.print(msg);
-            String time = input.nextLine().trim();
+            String t = input.nextLine().trim();
 
-            time = time.replace("am", "AM").replace("pm", "PM");
+            // auto-fix lowercase + spacing
+            t = t.replace("am", "AM").replace("pm", "PM");
+            t = t.replaceAll("(AM|PM)", " $1").trim();
 
-            if (time.matches("\\d{1,2}:\\d{2} (AM|PM)")) {
-                return time;
+            if (t.matches("\\d{1,2}:\\d{2} (AM|PM)")) {
+                return t;
             }
 
-            System.out.println("Invalid format.");
+            System.out.println("Invalid format. Use like 8:00 AM");
         }
     }
 }

@@ -1,0 +1,7 @@
+Period 1,8:45 AM,9:42 AM
+Period 2,9:48 AM,10:45 AM
+Period 3,10:51 AM,11:48 AM
+Period 4,11:54 AM,12:51 PM
+LUNCH,12:57 PM,1:27 PM
+Period 5,1:33 PM,2:30 PM
+Period 6,2:36 PM,3:33 PM

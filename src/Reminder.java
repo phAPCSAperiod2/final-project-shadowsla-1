@@ -1,51 +1,124 @@
 public class Reminder {
 
-    public void startLiveTracker(Period p) {
+    public void startLiveTracker(
+            BellSchedule bell) {
 
-        System.out.println("\n--- Live Tracker Started --- (Ctrl+C to stop)");
+        System.out.println(
+                "\n=== LIVE TRACKER ===");
+
+        System.out.println(
+                "Press Ctrl + C to stop.\n");
 
         while (true) {
 
-            int now = TimeUtil.getCurrentMinutes();
+            int now =
+                    TimeUtil.getCurrentSeconds();
 
-            System.out.println("\n" + TimeUtil.getTimeString());
+            System.out.println(
+                    "\n"
+                            + TimeUtil.getTimeString());
 
             boolean found = false;
 
-            for (int i = 0; i < p.count; i++) {
+            for (int i = 0;
+                 i < bell.count;
+                 i++) {
 
-                int start = TimeUtil.toMinutes(p.startTimes[i]);
-                int end = TimeUtil.toMinutes(p.endTimes[i]);
+                int start =
+                        TimeUtil.toSeconds(
+                                bell.startTimes[i]);
 
-                if (now >= start && now < end) {
-                    System.out.println("Current Class: " + p.names[i]);
-                    System.out.println("Ends in: " +
-                            TimeUtil.minutesUntil(p.endTimes[i]) + " min");
+                int end =
+                        TimeUtil.toSeconds(
+                                bell.endTimes[i]);
+
+                // CURRENT CLASS
+                if (now >= start
+                        && now < end) {
+
+                    int remain =
+                            end - now;
+
+                    int min =
+                            remain / 60;
+
+                    int sec =
+                            remain % 60;
+
+                    System.out.println(
+                            "Current Period: "
+                                    + (i + 1));
+
+                    System.out.println(
+                            "Class: "
+                                    + bell.classNames[i]);
+
+                    System.out.println(
+                            "Ends In: "
+                                    + min
+                                    + "m "
+                                    + sec
+                                    + "s");
+
                     found = true;
+
                     break;
                 }
 
+                // NEXT CLASS
                 if (now < start) {
-                    System.out.println("Next Class: " + p.names[i]);
-                    System.out.println("Starts in: " +
-                            TimeUtil.minutesUntil(p.startTimes[i]) + " min");
 
-                    if (TimeUtil.minutesUntil(p.startTimes[i]) <= 5) {
-                        System.out.println("⚠ Passing period ending soon!");
+                    int remain =
+                            start - now;
+
+                    int min =
+                            remain / 60;
+
+                    int sec =
+                            remain % 60;
+
+                    System.out.println(
+                            "Next Period: "
+                                    + (i + 1));
+
+                    System.out.println(
+                            "Class: "
+                                    + bell.classNames[i]);
+
+                    System.out.println(
+                            "Starts In: "
+                                    + min
+                                    + "m "
+                                    + sec
+                                    + "s");
+
+                    if (remain <= 300) {
+
+                        System.out.println(
+                                "⚠ Passing period almost over");
                     }
 
                     found = true;
+
                     break;
                 }
             }
 
             if (!found) {
-                System.out.println("No more classes today.");
+
+                System.out.println(
+                        "School day finished.");
             }
 
             try {
-                Thread.sleep(30000); // updates every 30 sec
-            } catch (Exception e) {}
+
+                Thread.sleep(1000);
+
+            } catch (Exception e) {
+
+                System.out.println(
+                        "Tracker stopped.");
+            }
         }
     }
 }

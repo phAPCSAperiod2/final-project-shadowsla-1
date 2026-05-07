@@ -1,26 +1,39 @@
 public class Schedule {
 
-    public void showGaps(Period p) {
+    public static void showPassingPeriods(
+            BellSchedule bell) {
 
-        if (p.count < 2) {
-            System.out.println("Not enough classes.");
-            return;
-        }
+        System.out.println(
+                "\n=== PASSING PERIODS ===");
 
-        System.out.println("\n--- Passing Periods ---");
+        for (int i = 0;
+             i < bell.count - 1;
+             i++) {
 
-        for (int i = 0; i < p.count - 1; i++) {
+            int currentEnd =
+                    TimeUtil.toMinutes(
+                            bell.endTimes[i]);
 
-            int end = TimeUtil.toMinutes(p.endTimes[i]);
-            int next = TimeUtil.toMinutes(p.startTimes[i + 1]);
+            int nextStart =
+                    TimeUtil.toMinutes(
+                            bell.startTimes[i + 1]);
 
-            int gap = next - end;
+            int gap =
+                    nextStart - currentEnd;
 
-            System.out.println(p.names[i] + " → " +
-                    p.names[i + 1] + ": " + gap + " min");
+            System.out.println(
+                    "Between Period "
+                            + (i + 1)
+                            + " and "
+                            + (i + 2)
+                            + ": "
+                            + gap
+                            + " min");
 
-            if (gap < 10) {
-                System.out.println("⚠ Hurry!");
+            if (gap <= 5) {
+
+                System.out.println(
+                        "⚠ Short passing period");
             }
         }
     }

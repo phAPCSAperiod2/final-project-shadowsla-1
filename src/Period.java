@@ -5,135 +5,230 @@ import java.util.Scanner;
 
 public class Period {
 
-    String[] names = new String[10];
-    String[] startTimes = new String[10];
-    String[] endTimes = new String[10];
+    String[] names = new String[20];
+    String[] startTimes = new String[20];
+    String[] endTimes = new String[20];
+
     int count = 0;
 
-    public void addOrUpdatePeriod(String name, String start, String end) {
+    // ADD / UPDATE
+    public void addOrUpdatePeriod(
+            String name,
+            String start,
+            String end) {
 
-        if (!isStartBeforeEnd(start, end)) {
-            System.out.println("Start must be before end.");
+        if (TimeUtil.toMinutes(start)
+                >= TimeUtil.toMinutes(end)) {
+
+            System.out.println(
+                    "Start time must be before end time.");
             return;
         }
 
+        // update existing
         for (int i = 0; i < count; i++) {
+
             if (names[i].equalsIgnoreCase(name)) {
-                names[i] = name;
+
                 startTimes[i] = start;
                 endTimes[i] = end;
-                sort();
+
+                sortSchedule();
+
+                System.out.println("Updated.");
+
                 return;
             }
         }
 
-        if (count < 10) {
-            names[count] = name;
-            startTimes[count] = start;
-            endTimes[count] = end;
-            count++;
-        }
+        // add new
+        names[count] = name;
+        startTimes[count] = start;
+        endTimes[count] = end;
 
-        sort();
+        count++;
+
+        sortSchedule();
+
+        System.out.println("Added.");
     }
 
+    // DISPLAY
     public void displayPeriods() {
 
-        System.out.println("\n--- Schedule ---");
+        System.out.println("\n======= SCHEDULE =======");
 
         if (count == 0) {
+
             System.out.println("No classes.");
+
             return;
         }
 
         for (int i = 0; i < count; i++) {
-            System.out.println((i + 1) + ". " + names[i] + " | " +
-                    startTimes[i] + " - " + endTimes[i]);
+
+            System.out.println(
+                    (i + 1) + ". "
+                            + names[i]
+                            + " | "
+                            + startTimes[i]
+                            + " - "
+                            + endTimes[i]);
         }
     }
 
+    // EDIT
     public void editClass(Scanner input) {
 
         displayPeriods();
 
-        System.out.print("Edit number: ");
-        int i = input.nextInt() - 1;
+        if (count == 0) {
+            return;
+        }
+
+        System.out.print("\nClass number to edit: ");
+
+        int choice = input.nextInt();
+
         input.nextLine();
 
-        if (i < 0 || i >= count) return;
+        choice--;
 
-        System.out.print("New name: ");
-        names[i] = input.nextLine();
+        if (choice < 0 || choice >= count) {
 
-        System.out.print("New start: ");
-        startTimes[i] = input.nextLine();
+            System.out.println("Invalid class.");
 
-        System.out.print("New end: ");
-        endTimes[i] = input.nextLine();
+            return;
+        }
 
-        sort();
+        System.out.print("New class name: ");
+        names[choice] = input.nextLine();
+
+        System.out.print("New start time: ");
+        startTimes[choice] = input.nextLine();
+
+        System.out.print("New end time: ");
+        endTimes[choice] = input.nextLine();
+
+        sortSchedule();
+
+        System.out.println("Class updated.");
     }
 
+    // DELETE
     public void deleteClass(Scanner input) {
 
         displayPeriods();
 
-        System.out.print("Delete number: ");
-        int i = input.nextInt() - 1;
+        if (count == 0) {
+            return;
+        }
+
+        System.out.print("\nClass number to delete: ");
+
+        int choice = input.nextInt();
+
         input.nextLine();
 
-        if (i < 0 || i >= count) return;
+        choice--;
 
-        for (int j = i; j < count - 1; j++) {
-            names[j] = names[j + 1];
-            startTimes[j] = startTimes[j + 1];
-            endTimes[j] = endTimes[j + 1];
+        if (choice < 0 || choice >= count) {
+
+            System.out.println("Invalid class.");
+
+            return;
+        }
+
+        for (int i = choice; i < count - 1; i++) {
+
+            names[i] = names[i + 1];
+            startTimes[i] = startTimes[i + 1];
+            endTimes[i] = endTimes[i + 1];
         }
 
         count--;
+
+        System.out.println("Class deleted.");
     }
 
-    private void sort() {
+    // SORT
+    public void sortSchedule() {
 
         for (int i = 0; i < count - 1; i++) {
+
             for (int j = i + 1; j < count; j++) {
 
-                if (TimeUtil.toMinutes(startTimes[i]) >
-                        TimeUtil.toMinutes(startTimes[j])) {
+                if (TimeUtil.toMinutes(startTimes[i])
+                        > TimeUtil.toMinutes(startTimes[j])) {
 
-                    String t;
+                    String temp;
 
-                    t = names[i]; names[i] = names[j]; names[j] = t;
-                    t = startTimes[i]; startTimes[i] = startTimes[j]; startTimes[j] = t;
-                    t = endTimes[i]; endTimes[i] = endTimes[j]; endTimes[j] = t;
+                    temp = names[i];
+                    names[i] = names[j];
+                    names[j] = temp;
+
+                    temp = startTimes[i];
+                    startTimes[i] = startTimes[j];
+                    startTimes[j] = temp;
+
+                    temp = endTimes[i];
+                    endTimes[i] = endTimes[j];
+                    endTimes[j] = temp;
                 }
             }
         }
     }
 
-    private boolean isStartBeforeEnd(String s, String e) {
-        return TimeUtil.toMinutes(s) < TimeUtil.toMinutes(e);
-    }
-
+    // SAVE
     public void saveToFile() {
+
         try {
-            PrintWriter w = new PrintWriter("schedule.txt");
+
+            PrintWriter writer =
+                    new PrintWriter("schedule.txt");
+
             for (int i = 0; i < count; i++) {
-                w.println(names[i] + "," + startTimes[i] + "," + endTimes[i]);
+
+                writer.println(
+                        names[i] + ","
+                                + startTimes[i] + ","
+                                + endTimes[i]);
             }
-            w.close();
-        } catch (Exception ex) {}
+
+            writer.close();
+
+        } catch (Exception e) {
+
+            System.out.println("Could not save.");
+        }
     }
 
+    // LOAD
     public void loadFromFile() {
+
         try {
-            BufferedReader r = new BufferedReader(new FileReader("schedule.txt"));
+
+            BufferedReader reader =
+                    new BufferedReader(
+                            new FileReader("schedule.txt"));
+
             String line;
-            while ((line = r.readLine()) != null) {
-                String[] p = line.split(",");
-                addOrUpdatePeriod(p[0], p[1], p[2]);
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] parts = line.split(",");
+
+                addOrUpdatePeriod(
+                        parts[0],
+                        parts[1],
+                        parts[2]);
             }
-            r.close();
-        } catch (Exception ex) {}
+
+            reader.close();
+
+        } catch (Exception e) {
+
+            // no file yet
+        }
     }
 }
